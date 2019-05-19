@@ -2635,7 +2635,7 @@ do_wait:
 	}
 }
 
-#if CONFIG_HUAWEI_SAWSHARK
+#ifdef CONFIG_HUAWEI_SAWSHARK
 extern bool mp2661_global_is_chg_plugged_in(void);
 #endif
 
@@ -3386,7 +3386,7 @@ static int otg_power_get_property_usb(struct power_supply *psy,
 		break;
 	/* Reflect USB enumeration */
 	case POWER_SUPPLY_PROP_ONLINE:
-#if CONFIG_HUAWEI_SAWSHARK
+#ifdef CONFIG_HUAWEI_SAWSHARK
 		/* online status is determined by charger */
 		val->intval = (int)mp2661_global_is_chg_plugged_in();
 #else

@@ -72,9 +72,11 @@ static ssize_t power_supply_show_property(struct device *dev,
 	static char *scope_text[] = {
 		"Unknown", "System", "Device"
 	};
+#ifdef CONFIG_HUAWEI_SAWSHARK
 	static char *battery_id[] = {
 		"Unknown", "GUANGYU", "DESAY"
 	};
+#endif
 	ssize_t ret = 0;
 	struct power_supply *psy = dev_get_drvdata(dev);
 	const ptrdiff_t off = attr - power_supply_attrs;
@@ -82,7 +84,7 @@ static ssize_t power_supply_show_property(struct device *dev,
 
 	if (off == POWER_SUPPLY_PROP_TYPE) {
 		value.intval = psy->type;
-#if CONFIG_HUAWEI_SAWSHARK
+#ifdef CONFIG_HUAWEI_SAWSHARK
 		/*The usb probe interface sets charger type to USB and healthd will detect the charger type.
 		 *If the type is unknown, healthd indicates that there is no charger driver registered and display
 		 *charger parameters wrongly, for example, chg type is empty.
@@ -125,6 +127,7 @@ static ssize_t power_supply_show_property(struct device *dev,
 		return sprintf(buf, "%s\n", type_text[value.intval]);
 	else if (off == POWER_SUPPLY_PROP_SCOPE)
 		return sprintf(buf, "%s\n", scope_text[value.intval]);
+#ifdef CONFIG_HUAWEI_SAWSHARK
 	else if (off == POWER_SUPPLY_PROP_USB_INPUT_CURRENT)
 		return sprintf(buf, "%d\n", value.intval);
 	else if (off == POWER_SUPPLY_PROP_BATTERY_ID)
@@ -137,6 +140,7 @@ static ssize_t power_supply_show_property(struct device *dev,
 		return sprintf(buf, "%d\n", value.intval);
 	else if (off == POWER_SUPPLY_PROP_VBUS_ONLINE_STATUS)
 		return sprintf(buf, "%d\n", value.intval);
+#endif
 	else if (off >= POWER_SUPPLY_PROP_MODEL_NAME)
 		return sprintf(buf, "%s\n", value.strval);
 
@@ -237,7 +241,9 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(scope),
 	POWER_SUPPLY_ATTR(charge_term_current),
 	POWER_SUPPLY_ATTR(calibrate),
+#ifdef CONFIG_HUAWEI_SAWSHARK
 	POWER_SUPPLY_ATTR(vbus_online_status),
+#endif
 	/* Local extensions */
 	POWER_SUPPLY_ATTR(usb_hc),
 	POWER_SUPPLY_ATTR(usb_otg),
@@ -283,11 +289,13 @@ static struct device_attribute power_supply_attrs[] = {
 	POWER_SUPPLY_ATTR(manufacturer),
 	POWER_SUPPLY_ATTR(serial_number),
 	POWER_SUPPLY_ATTR(battery_type),
+#ifdef CONFIG_HUAWEI_SAWSHARK
 	POWER_SUPPLY_ATTR(usb_input_current),
 	POWER_SUPPLY_ATTR(battery_id),
 	POWER_SUPPLY_ATTR(dev_name),
 	POWER_SUPPLY_ATTR(retail_mode),
 	POWER_SUPPLY_ATTR(notify_user_paired),
+#endif
 };
 
 static struct attribute *
